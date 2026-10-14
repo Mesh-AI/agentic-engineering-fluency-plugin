@@ -8,7 +8,7 @@ Usage: python3 <skill-dir>/scripts/check_record.py <record.yaml|record.json>
 import re
 import sys
 
-from record_io import PRACTICES_PHASE, competencies, load_framework, read_record
+from record_io import PRACTICES_PHASE, SEMVER, competencies, load_framework, read_record
 
 
 def main():
@@ -19,6 +19,11 @@ def main():
     record = read_record(sys.argv[1])
     scores = record.get("scores") or []
     errors = []
+
+    method = record.get("method") or {}
+    for key in ("skill_version", "framework_version"):
+        if not SEMVER.match(str(method.get(key) or "")):
+            errors.append(f"method.{key} must be MAJOR.MINOR.PATCH, got {method.get(key)}")
 
     ids = [s.get("competency") for s in scores]
     if ids != [c["id"] for c in expected]:

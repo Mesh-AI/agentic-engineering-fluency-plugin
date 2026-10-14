@@ -18,7 +18,7 @@ import math
 import sys
 from pathlib import Path
 
-from record_io import PRACTICES_PHASE, competencies, load_framework, write_record
+from record_io import PRACTICES_PHASE, competencies, load_framework, skill_version, write_record
 
 # ---- Thresholds. Change these to calibrate; they are reported in the record. ----
 T = {
@@ -317,6 +317,7 @@ def main():
         },
         "method": {
             "skill": "sessions-to-fluency",
+            "skill_version": skill_version(),
             "framework_version": framework["version"],
             "max_level": 3,
             "note": "Levels computed by fixed rules from per-session facets and transcript metrics. L4-L5 need outside evidence and approval. L0 means not seen in Claude Code sessions.",

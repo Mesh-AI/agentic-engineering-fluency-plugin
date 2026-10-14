@@ -42,6 +42,27 @@ provide `git`. If `python3` asks you to install them, accept, or run `xcode-sele
 - Claude Code deletes transcripts older than `cleanupPeriodDays` (default 30). Raise that
   setting if you want to score a longer period.
 
+## Versions
+
+Each record's `method` block holds two versions, both `MAJOR.MINOR.PATCH`:
+
+- `skill_version`: the plugin version from `.claude-plugin/plugin.json`.
+- `framework_version`: the version of `references/framework.json`.
+
+Both follow one rule: would the same sessions get the same levels?
+
+| Bump | When |
+| --- | --- |
+| MAJOR | The same sessions could get different levels: thresholds, scoring rules, facet definitions, competencies or the level scale change. |
+| MINOR | Levels stay the same, but the record changes: new metrics or fields, better evidence or next-step wording. |
+| PATCH | The record does not change: docs, refactors, crash fixes. |
+
+Before 1.0.0, the MINOR number takes the place of MAJOR: a change that can move levels goes
+from 0.1.x to 0.2.0. Records are comparable when their versions match on MAJOR (0.MINOR before
+1.0.0). `compare_runs.py` warns when they do not. When unsure, bump higher. The two versions are
+independent: the framework can stay the same while the skill's method changes, and the other
+way round.
+
 ## Privacy
 
 Your transcripts stay on your machine. The work directory holds condensed transcript text,

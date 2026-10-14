@@ -31,7 +31,8 @@ The pipeline:
 directory). Use it in every path below, so the skill runs from any working directory.
 
 - `references/framework.json`: the competencies, phases and level descriptors. A copy of the
-  framework at the version in its `version` field. Replace it when the framework changes.
+  framework at the version in its `version` field (`MAJOR.MINOR.PATCH`). Replace it when the
+  framework changes.
 - `references/facets.md`: what to record for each session.
 - `scripts/`: `collect_sessions.py`, `score_facets.py`, `check_record.py`, `compare_runs.py`
   and their shared `record_io.py`. Python 3.8+, standard library only.
@@ -113,4 +114,5 @@ python3 <skill-dir>/scripts/compare_runs.py <record-a.yaml> <record-b.yaml> [...
 ```
 
 It prints each competency's level per record, the median, and the share of exact and
-within-one agreement.
+within-one agreement. It warns when the records' `skill_version` or `framework_version` differ in a
+breaking way, because their levels may not be comparable.

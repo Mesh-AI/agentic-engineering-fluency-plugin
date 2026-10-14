@@ -11,11 +11,30 @@ import re
 from pathlib import Path
 
 FRAMEWORK = Path(__file__).resolve().parent.parent / "references" / "framework.json"
+PLUGIN_MANIFEST = Path(__file__).resolve().parents[3] / ".claude-plugin" / "plugin.json"
 PRACTICES_PHASE = "agentic-ai-practices"
+SEMVER = re.compile(r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$")
 
 
 def load_framework():
     return json.loads(FRAMEWORK.read_text(encoding="utf-8"))
+
+
+def skill_version():
+    """The plugin's version from plugin.json, which is also the version of this skill."""
+    return json.loads(PLUGIN_MANIFEST.read_text(encoding="utf-8"))["version"]
+
+
+def compatible_series(version):
+    """The part of a MAJOR.MINOR.PATCH version that must match for levels to be comparable.
+
+    MAJOR from 1.0.0 on. Before 1.0.0, MINOR is the breaking number, so 0.MINOR.
+    """
+    m = SEMVER.match(version or "")
+    if not m:
+        return None
+    major, minor = int(m.group(1)), int(m.group(2))
+    return f"{major}" if major else f"0.{minor}"
 
 
 def competencies(framework):

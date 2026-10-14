@@ -7,14 +7,20 @@ Usage: python3 <skill-dir>/scripts/compare_runs.py a.yaml b.yaml [c.yaml ...]
 """
 import sys
 
-from record_io import read_record
+from record_io import compatible_series, read_record
 
 
 def main():
     paths = sys.argv[1:]
     if len(paths) < 2:
         sys.exit("usage: compare_runs.py a.yaml b.yaml [c.yaml ...]")
-    runs = [{s["competency"]: s.get("level") for s in read_record(p)["scores"]} for p in paths]
+    records = [read_record(p) for p in paths]
+    for key in ("skill_version", "framework_version"):
+        versions = [(r.get("method") or {}).get(key) for r in records]
+        if len({compatible_series(v) for v in versions}) > 1:
+            listed = ", ".join(f"r{i + 1} {v or 'none'}" for i, v in enumerate(versions))
+            print(f"warning: {key} differs in a breaking way ({listed}); levels may not be comparable\n")
+    runs = [{s["competency"]: s.get("level") for s in r["scores"]} for r in records]
     show = lambda v: "-" if v is None else str(v)
     exact = near = 0
     print("competency".ljust(34) + "".join(f"r{i + 1}".ljust(4) for i in range(len(runs))) + "median")
