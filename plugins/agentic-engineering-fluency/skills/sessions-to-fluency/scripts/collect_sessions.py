@@ -56,6 +56,19 @@ FILE_CATEGORIES = [  # first match wins
 
 CONTEXT_COMMANDS = {"/clear", "/compact", "/context", "/model", "/cost", "/usage", "/memory", "/init", "/insights", "/resume"}
 
+# Input prices as multiples of base input price (platform.claude.com/docs/en/about-claude/pricing).
+# Uncached input is 1x. Cache writes cost 1.25x (5-minute lifetime) or 2x (1-hour lifetime).
+CACHE_WRITE_PRICE = {"5m": 1.25, "1h": 2.0}
+CACHE_READ_PRICE = [("fable-5-1", 0.025), ("mythos-5-1", 0.025), ("opus-5-5", 0.05), ("sonnet-5-5", 0.05)]
+CACHE_READ_DEFAULT = 0.1
+CACHE_LIFETIME = {"5m": 300, "1h": 3600}
+# A request counts as a cache rebuild when it writes at least this share of a context at least this big.
+REBUILD_SHARE, REBUILD_MIN_TOKENS = 0.5, 50_000
+
+
+def read_price(model):
+    return next((p for key, p in CACHE_READ_PRICE if key in (model or "")), CACHE_READ_DEFAULT)
+
 
 def parse_ts(s):
     try:
@@ -112,7 +125,12 @@ def collect(path: Path):
         "user_prompts": 0, "user_answers": 0, "interrupts": 0, "rejections": 0, "classifier_denials": 0, "tool_errors": 0,
         "tools": Counter(), "skills": Counter(), "mcp_servers": Counter(), "commands": Counter(),
         "bash": Counter(), "files": Counter(), "tokens": Counter(), "cwds": Counter(),
+        "peak_context": 0,
+        # One [context tokens, input cost, cost of an idle cache rebuild] per main-conversation request.
+        # Cost is in base-input-token units, so it compares across requests and sessions.
+        "requests": [],
     }
+    last_request = None
     lines = []
     seen_uuids, seen_msgs, seen_prompts = set(), set(), set()
     ask_ids = set()  # AskUserQuestion tool calls, whose results hold the engineer's answers
@@ -185,9 +203,21 @@ def collect(path: Path):
                 seen_msgs.add(msg.get("id"))
                 if msg.get("model") and msg["model"] != "<synthetic>":
                     s["models"][msg["model"]] += 1
-                for k, v in (msg.get("usage") or {}).items():
+                usage = msg.get("usage") or {}
+                for k, v in usage.items():
                     if isinstance(v, int):
                         s["tokens"][k] += v
+                # Context sent to the model for this message: new input plus cached prefix.
+                read, write, fresh = (usage.get(k) or 0 for k in ("cache_read_input_tokens", "cache_creation_input_tokens", "input_tokens"))
+                sent = read + write + fresh
+                s["peak_context"] = max(s["peak_context"], sent)
+                ttl = "1h" if (usage.get("cache_creation") or {}).get("ephemeral_1h_input_tokens") else "5m"
+                write_cost = CACHE_WRITE_PRICE[ttl] * write
+                idle = (ts and last_request and (ts - last_request).total_seconds() > CACHE_LIFETIME[ttl])
+                rebuilt = idle and sent >= REBUILD_MIN_TOKENS and write >= REBUILD_SHARE * sent
+                s["requests"].append([sent, round(read_price(msg.get("model")) * read + write_cost + fresh), round(write_cost) if rebuilt else 0])
+                if ts:
+                    last_request = ts
             if not isinstance(content, list):
                 continue
             for b in content:

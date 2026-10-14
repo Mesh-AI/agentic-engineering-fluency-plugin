@@ -28,6 +28,10 @@ T = {
     "high_confidence_sessions": 4,  # confidence high at this many sessions, medium at 2+
     "practice_share": 0.4,          # practices: share of sessions needed for a habit
     "tooling_kinds_l3": 2,          # tooling L3: kinds of non-default tooling in use
+    "work_session_prompts": 3,      # token economics: sessions with this many prompts count as work
+    "long_context": 350_000,        # token economics: requests above this many context tokens are long context
+    "waste_flag": 0.10,             # token economics: a waste pattern at this share of input cost drops L3 to L2
+    "waste_severe": 0.25,           # ... and at this share drops to L1
 }
 # Competencies whose L3 descriptor asks the engineer to judge the agent's approach against alternatives.
 NEEDS_ALTERNATIVES = {"write-code", "design-architecture", "data-modelling"}
@@ -270,18 +274,51 @@ def main():
 
     measured = count_where("measured_results", lambda v: v is True)
     scores["measurement"] = practice(
-        [(2, measured >= 1 or any(commands.get(c) for c in ("/cost", "/usage", "/insights"))), (3, measured >= 2)],
+        [(2, measured >= 1), (3, measured >= 2)],
         [f"measured or compared results in {measured}/{n} sessions", *example_where("measured_results", lambda v: v is True)] if measured else [],
-        lambda l: "L3 needs tracking of your own results with AI (2+ sessions showing it)." if l < 3 else "L4 needs tracking at team level.",
+        lambda l: ("L2 needs a session where you measured your own results with AI, such as time saved or rework." if l < 2 else
+                   "L3 needs tracking of your own results with AI (2+ sessions showing it)." if l < 3 else "L4 needs tracking at team level."),
     )
 
+    # Token economics: start at L3 and drop for waste, measured as a share of input cost the way
+    # Claude Code's /usage flags long context and cache misses.
     cost_sessions = count_where("cost_or_context_management", lambda v: v is True)
+    work = [s for s in metrics.get("sessions") or [] if s.get("user_prompts", 0) >= T["work_session_prompts"]]
+    w = len(work)
+    # Each request is [context tokens, input cost, cost of an idle cache rebuild]; see collect_sessions.py.
+    long_cost = lambda r: r[1] if r[0] > T["long_context"] else 0
+    miss_cost = lambda r: r[2]
+    total_cost = sum(r[1] for s in work for r in s.get("requests") or []) or 1
+    share_of = lambda cost_of: sum(cost_of(r) for s in work for r in s.get("requests") or []) / total_cost
+
+    def worst(cost_of):
+        ranked = sorted(((sum(cost_of(r) for r in s.get("requests") or []), s["id"][:8]) for s in work), reverse=True)
+        top = [sid for cost, sid in ranked[:3] if cost > 0]
+        return f"; most in {', '.join(top)}" if top else ""
+
+    long_share, miss_share = share_of(long_cost), share_of(miss_cost)
+    peaks = sorted(s.get("peak_context") or 0 for s in work)
+    kt = lambda x: f"{round(x / 1000)}k"
+    shares = (miss_share, long_share)
+    tips = []
+    if miss_share >= T["waste_flag"]:
+        tips.append("after a break longer than the cache lifetime (1 hour on a subscription, 5 minutes on an API key), start a new session or resume from a summary instead of continuing a large one")
+    if long_share >= T["waste_flag"]:
+        tips.append(f"keep context under {kt(T['long_context'])}: /clear between unrelated tasks, /compact at natural breaks, and send verbose work to subagents")
     scores["token-economics"] = practice(
-        [(2, cost_sessions >= 1 or S["with_context_commands"] >= 0.2), (3, cost_sessions >= 2 and cost_sessions >= practice_count)],
-        [f"deliberate cost or context management in {cost_sessions}/{n} sessions; context commands in {pct(S['with_context_commands'])} of sessions ({', '.join(f'{k} {v}' for k, v in commands.items())})",
+        [(2, w >= T["routine_sessions"] and max(shares) < T["waste_severe"]),
+         (3, max(shares) < T["waste_flag"])],
+        [f"cache rebuilt after idling past the cache lifetime: {pct(miss_share)} of input cost in {w} work sessions ({T['work_session_prompts']}+ prompts)"
+         + worst(miss_cost),
+         f"requests over {kt(T['long_context'])} context: {pct(long_share)} of input cost" + worst(long_cost),
+         f"peak context per work session: median {kt(peaks[(w - 1) // 2]) if w else '-'}, largest {kt(peaks[-1]) if w else '-'}",
+         f"deliberate cost or context management in {cost_sessions}/{n} sessions",
          f"metrics: models used {', '.join(M['distinct'].get('models') or [])}; cache read ratio {M.get('cache_read_ratio')}"],
-        lambda l: f"L3 needs the cost/context trade-off managed deliberately in {pct(T['practice_share'])}+ of sessions; seen {cost_sessions}/{n}." if l < 3 else "L4 needs cost controls others adopt.",
-        near(share(cost_sessions), T["practice_share"]) or near(S["with_context_commands"], 0.2),
+        lambda l: (f"L2 needs {T['routine_sessions']}+ work sessions to measure; seen {w}." if w < T["routine_sessions"] else
+                   f"L2 needs each waste pattern under {pct(T['waste_severe'])} of input cost (L3: under {pct(T['waste_flag'])}): " + "; ".join(tips) + "." if l < 2 else
+                   f"L3 needs each waste pattern under {pct(T['waste_flag'])} of input cost: " + "; ".join(tips) + "." if l < 3 else
+                   "L4 needs cost controls others adopt."),
+        any(abs(x - cut) < 0.03 for x in shares for cut in (T["waste_flag"], T["waste_severe"])),
     )
 
     if all(l == 0 for l in job_levels):

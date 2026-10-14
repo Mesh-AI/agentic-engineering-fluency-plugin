@@ -20,7 +20,8 @@ The pipeline:
 
 1. `collect_sessions.py` (deterministic): reads transcripts and writes one digest per session,
    `metrics.json` (tool use, interrupts, rejections, tests run, files edited by type, tokens,
-   models, parallel sessions, setup such as hooks, skills and CLAUDE.md) and `index.json`.
+   context size and input cost per request, models, parallel sessions, setup such as hooks,
+   skills and CLAUDE.md) and `index.json`.
 2. Classification (model): one facets file per session, using `references/facets.md`.
 3. `score_facets.py` (deterministic): facets + metrics → levels, evidence, next steps and
    consistency checks.

@@ -1,7 +1,7 @@
 {
   "name": "agentic-engineering-fluency",
   "description": "Score your Agentic Engineering Fluency (L0–L3) from your own Claude Code session transcripts.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": {
     "name": "Rob De Feo"
   },

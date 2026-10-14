@@ -39,6 +39,8 @@ provide `git`. If `python3` asks you to install them, accept, or run `xcode-sele
 - L0 means "not seen in your Claude Code sessions", not "cannot do".
 - The thresholds are not yet calibrated against hand-scored engineers. Use the result as a
   self-assessment aid, not a performance rating.
+- Token economics weighs each request by list prices relative to base input (cache reads,
+  cache writes, uncached input). Contracted rates, output tokens and subagents are not counted.
 - Claude Code deletes transcripts older than `cleanupPeriodDays` (default 30). Raise that
   setting if you want to score a longer period.
 
