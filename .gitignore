@@ -1,0 +1,6 @@
+.DS_Store
+__pycache__/
+*.pyc
+sessions-work/
+*-fluency.yaml
+*-fluency.json
