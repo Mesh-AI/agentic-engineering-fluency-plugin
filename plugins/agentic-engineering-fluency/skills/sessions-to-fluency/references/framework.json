@@ -1,0 +1,395 @@
+{
+  "title": "Agentic Engineering Fluency",
+  "version": "v0.01",
+  "status": "current",
+  "level_scale": [
+    {
+      "level": 0,
+      "name": "None"
+    },
+    {
+      "level": 1,
+      "name": "Novice"
+    },
+    {
+      "level": 2,
+      "name": "Practicing"
+    },
+    {
+      "level": 3,
+      "name": "Proficient"
+    },
+    {
+      "level": 4,
+      "name": "Expert"
+    },
+    {
+      "level": 5,
+      "name": "Authority"
+    }
+  ],
+  "phases": [
+    {
+      "id": "plan",
+      "name": "Plan",
+      "competencies": [
+        {
+          "id": "requirements",
+          "name": "Requirements",
+          "description": "The ability to elicit, structure, and validate stakeholder needs into unambiguous, testable specifications (user stories, acceptance criteria, NFRs) that the engineer can act upon",
+          "levels": {
+            "0": "Does not use AI to help produce or refine requirements; requirements are handled entirely by hand.",
+            "1": "Ad-hoc use of AI to draft requirements verbatim but can't judge whether the output is correct, complete, or hallucinated — everything the AI produces still needs full human review.",
+            "2": "Uses AI to speed up drafting of routine requirements, manual evaluation of what AI missed or invented",
+            "3": "Directs AI through elicitation and drafting, critically edits its output, and knows which AI-generated requirements need extra human scrutiny.",
+            "4": "Delegates defined slices of requirements work to AI agents, but builds the verification layer around it. Mechanisms created that build trust in AI output. Builds repeatable, packaged AI workflows.",
+            "5": "Defines the governance model and org-wide standards for agentic AI in the requirements process itself"
+          }
+        },
+        {
+          "id": "threat-modelling",
+          "name": "Threat Modelling",
+          "description": "Identification of what could go wrong in a system, what assets are at risk, how an attacker could compromise them, and what controls mitigate those risks",
+          "levels": {
+            "0": "Does not use AI for threat modelling",
+            "1": "Ad-hoc/copy-paste, asks AI to brainstorm threats for a single component, manually reviewing everything it surfaces.",
+            "2": "Delegates common threat-enumeration tasks to AI across multiple systems, with a defined manual review step each time.",
+            "3": "Directs AI through elicitation and drafting, critically edits its output, and knows which AI-generated threats need extra human scrutiny. Knows which threat categories AI tends to miss and fills those manually.",
+            "4": "Uses AI to scale threat modeling across many systems/PRs, structuring prompts and context so output is consistently high-fidelity rather than one-off.",
+            "5": "Defines how AI should be integrated into the org's threat modeling practice — what context it needs, what it should never be trusted to do alone."
+          }
+        },
+        {
+          "id": "data-modelling",
+          "name": "Data Modelling",
+          "description": "Define how data is structured, related, and constrained (entities, attributes, relationships, and rules)  so that a system stores and uses information consistently and accurately.",
+          "levels": {
+            "0": "Does not use AI at all for data modelling work",
+            "1": "Ad-hoc/copy-paste, asks AI to draft a single schema or query on request, manually reviewing everything it produces.",
+            "2": "Delegates narrow/scoped tasks to AI across multiple pieces of work, with a defined manual review step each time.",
+            "3": "Briefs an agent on a full schema design, including the trade-offs, then triages the output as they would to their own work.",
+            "4": "Orchestrates agentic data modelling workflows.",
+            "5": "Sets what agents may do autonomously in data modelling org-wide, and the review policy for everything else — the agent trust tiers are their call to make."
+          }
+        },
+        {
+          "id": "design-architecture",
+          "name": "Design & Architecture",
+          "description": "The high-level structure of a system - its major components, how they fit together, and cross-cutting decisions (scalability, technology choices, integration patterns, non-functional trade-offs) that act as a constrain on what is built to satisfy the requirements.",
+          "levels": {
+            "0": "Does not use AI for design and architecture planning work",
+            "1": "Ad-hoc/copy-paste — asks AI to draft a design or diagram, manually reviewing everything it produces.",
+            "2": "Delegates common design tasks to AI across multiple pieces of work, with a defined manual review step each time.",
+            "3": "Evaluates agent-produced designs against alternatives they'd have picked themselves; treats agent output as a proposal to be reviewed, not a decision.",
+            "4": "Delegates real design work to agents under self-built guardrails; catches subtly wrong agent output even in unfamiliar domains.",
+            "5": "Defines how much design/architecture authority agents get org-wide — what they can decide unsupervised vs. what needs a human gate — and the methodology for judging whether agentic output is actually better."
+          }
+        }
+      ]
+    },
+    {
+      "id": "build",
+      "name": "Build",
+      "competencies": [
+        {
+          "id": "write-code",
+          "name": "Write Code",
+          "description": "The use of agentic AI to write code",
+          "levels": {
+            "0": "Does not use AI to write any code",
+            "1": "Ad-hoc/copy-paste — asks AI to write a single function or fix on request, manually reviewing everything it produces.",
+            "2": "Directs the agent on well-defined, routine tasks with a defined manual review step each time.",
+            "3": "Delegates whole features to the agent, judges its proposed approach against alternatives",
+            "4": "Orchestrates the writing of code through agents. Implements mechanisms that produces consistently good/correct code.",
+            "5": "Sets org policy for agentic code writing standards. Owns the methodology for judging whether agentic workflows are a genuine improvement."
+          }
+        },
+        {
+          "id": "write-tests",
+          "name": "Write Tests",
+          "description": "The use of agentic AI to write tests. This could be code based tests (unit, integration, end to end, etc), but extends to writing test cases, writing test strategy, crearting testing reports, managing test coverage and more.",
+          "levels": {
+            "0": "Does not use AI to write tests or define testing approach",
+            "1": "Ad-hoc/copy-paste — asks AI to generate isolated tests. Manually reviewing everything it produces.",
+            "2": "Directs agent to generate standard-pattern tests for common cases unsupervised",
+            "3": "Directs agents to implement tests as defined by requirements.",
+            "4": "Directs agents to design testing strategy on what and how to test, and then uses AI to create the supporting tests",
+            "5": "Defines the org-wide approach to how to use agents to meet the testing bar in agentic engineering."
+          }
+        },
+        {
+          "id": "refactoring-code",
+          "name": "Refactoring Code",
+          "description": "The use of AI to make changes to existing code - whether that is to optimise function, optimise effeciency and performance, or change language/platform.",
+          "levels": {
+            "0": "Does not use AI for refactoring code",
+            "1": "Ad-hoc/copy-paste — asks AI to refactor a single function or file on request, manually reviewing everything it produces.",
+            "2": "Delegates common refactoring tasks to AI across multiple pieces of work, with a defined manual review step each time.",
+            "3": "Delegates well-scoped refactors to an agent end-to-end, trusting it via self-defined checks rather than line-by-line inspection.",
+            "4": "Understands how to orchestrate an agent on legacy/critical refactors by creating the same guardrails and safety nets they would create for themselves — the agent's autonomy tier mirrors their own.",
+            "5": "Defines the org-wide standard and creates patterns on how to use AI for code refactoring."
+          }
+        },
+        {
+          "id": "writing-data-structures",
+          "name": "Writing data structures",
+          "description": "The use of AI to write code that works with data. This could be SQL, but also includes reading/writing data to non SQL data stores (NoSQL, filesystem, binary files, etc) and working with streaming data.",
+          "levels": {
+            "0": "Does not use AI to write data structures",
+            "1": "Ad-hoc/copy-paste — asks AI to write a single query or integration snippet on request, manually reviewing everything it produces.",
+            "2": "Delegates common data structure task to AI with a defined manual review step each time.",
+            "3": "Delegates well-scoped data structure tasks to an agent end-to-end, trusting it via self-defined checks rather than line-by-line inspection.",
+            "4": "Understands how to orchestrate an agent on data structure tasks by creating the same guardrails and safety nets they would create for themselves — the agent's autonomy tier mirrors their own.",
+            "5": "Defines the org policy for which agentic data-structure decisions need human sign-off vs. can run autonomously."
+          }
+        },
+        {
+          "id": "code-review",
+          "name": "Code Review",
+          "description": "The use of AI to help the engineer perform code reviews.",
+          "levels": {
+            "0": "Does not use AI for code reviews - done manually",
+            "1": "Ad-hoc/copy-paste — asks AI to review a single small change on request, manually verifying everything it flags.",
+            "2": "Delegates common review tasks to AI across multiple PRs, with a defined manual review step each time. Trusts the agent for mechanical checks but escalates anything it says about logic or design to a human.",
+            "3": "Delegates first-pass review to an agent and self-triages which of its findings need real scrutiny — treats it as a competent junior, not an oracle.",
+            "4": "Runs agentic review with self-built guardrails — confidence thresholds, escalation rules — calibrated to where the agent is reliable vs. where it confidently misjudges trade-offs.",
+            "5": "Designs the org's human-agent trust boundary: what agents can approve autonomously, what must escalate, and how agent review quality is audited over time."
+          }
+        },
+        {
+          "id": "security-review",
+          "name": "Security Review",
+          "description": "The use of AI to help engineers perform security reviews of code.",
+          "levels": {
+            "0": "Does not use AI for security reviews",
+            "1": "Ad-hoc basic syntax-level pattern matching and single-file security checks Manual review and verification of all output.",
+            "2": "Runs AI as a routine first-pass vuln scanner across most PRs, with a defined manual step to triage and confirm its findings.",
+            "3": "Runs a tuned AI security-review workflow, with verification calibrated to the AI's known blind spots.",
+            "4": "Understands how to orchestrate an agent to work on security review tasks by using the same guardrails and safety nets they would create for themselves.",
+            "5": "Sets the org-wide standard for how AI is used in security review, and how that trust is measured and revoked."
+          }
+        },
+        {
+          "id": "debugging-code",
+          "name": "Debugging Code",
+          "description": "The use of AI to help engineers debug issues with code, whether they have written that code or have been asked to debug an existing codebase.",
+          "levels": {
+            "0": "Does not use AI to help with debugging",
+            "1": "Pastes an error/stack trace into an AI chat ad-hoc for a single bug; treats every suggested fix as unverified and manually reproduces the issue before and after applying it.",
+            "2": "Uses AI routinely to help form hypotheses or explain stack traces across most bugs, with a defined step to verify the actual root cause before applying any fix.",
+            "3": "Defines effecitve AI workflows that accelerate debugging: structured troubleshooting, root-causes, symptoms analysis. More structured and less organic.",
+            "4": "Orchestrates AI to debug systematically.  Creates workflows that identify bugs and generate candidate patches independently.",
+            "5": "Sets the org-wide standard for how to use AI when debugging, and how trust is measured and revoked."
+          }
+        }
+      ]
+    },
+    {
+      "id": "operate",
+      "name": "Operate",
+      "competencies": [
+        {
+          "id": "deploy-applications",
+          "name": "Deploy applications",
+          "description": "The use of AI to help engineers deploy code, whether this is at the patch, application, or system level.",
+          "levels": {
+            "0": "Does not use AI to help with deployment of applications",
+            "1": "Ad-hoc/copy-paste — asks AI to draft a single deployment step or script on request, manually reviewing everything it produces.",
+            "2": "AI used as an inline assistant for common deployment tasks. Manual review step each time.",
+            "3": "Uses AI and leverages broad application/project context to design and create automated release workflows.",
+            "4": "Uses AI as an autonomous deployment orchestrator. Shifts human effort on defining strong controls and guardrails that drive up automation in a safe way.",
+            "5": "Designs the org-wide policy for what any agent — not just their own — is allowed to deploy autonomously, and what always requires a human."
+          }
+        },
+        {
+          "id": "documentation",
+          "name": "Documentation",
+          "description": "The use of AI to help engineers with all aspects of documentation. Documenting projects, documenting code and functions, creating diagrams and sequence flows, documenting entity relationships, etc",
+          "levels": {
+            "0": "Creates all docs manually",
+            "1": "Ad-hoc/copy-paste — asks AI to draft a single doc or comment on request, manually reviewing everything it produces.",
+            "2": "Uses AI to draft routine docs, then edits; spot-checks output but can miss subtle errors",
+            "3": "Delegates first drafts to an agent for known doc types; applies the same self-triage to AI output as to their own — extra scrutiny on high-stakes docs",
+            "4": "Builds verification pipelines for agentic output so AI-generated docs don't need line-by-line human checking.",
+            "5": "Sets org policy for what agentic AI can document unsupervised vs. what needs a human sign-off, and defines how \"trustworthy agentic documentation\" is measured."
+          }
+        },
+        {
+          "id": "monitor-incident-response",
+          "name": "Monitor & Incident response",
+          "description": "The use of AI to help engineers monitor applications and help them manage, understand and resolve incidents when they arrive.",
+          "levels": {
+            "0": "Manages incidents and monitoring using manual processes and existing tools",
+            "1": "Ad-hoc/copy-paste — used AI to act as intelligent lookup tool for clarifying alert definitions, log errors, and basic observability metrics, manually reviewing everything it produces.",
+            "2": "Delegates common tasks to AI across an incident. Hand over to human engineer to complete tirage/incident management.",
+            "3": "Uses AI to create to accelerate incident response. Focuses human effort on critical decision-making, complex root-cause evaluation, and post-incident reviews rather than getting the data. (Reactive)",
+            "4": "Orchestrates AI as a continuous, self-healing governance engine integrated into production infrastructure to prevent incidents before they impact users. (Proactive).",
+            "5": "Defines the org-wide standard for how AI is used in monitoring and incident response."
+          }
+        },
+        {
+          "id": "maintain-triage-bug-fix-patch",
+          "name": "Maintain (triage/bug fix/patch)",
+          "description": "The use of AI to help engineers triage (priortise), create fixes, and deploy those fixes to resolve issues.",
+          "levels": {
+            "0": "Does not use AI for maintaining applications",
+            "1": "Ad-hoc/copy-paste — asks AI to help reproduce or fix a single bug on request, manually reviewing everything it produces.",
+            "2": "Delegates common routine, playbook-matched bugs; to AI across an issue, with a defined manual review step each time.",
+            "3": "Uses AI to integrate across systems to analyze, indentify, and map errors back to source code, that accelerates drafting safe hotfixes. (Reactive)",
+            "4": "Works towards building AI into an integrated, self-maintaining engine embedded within the operating model to proactively identify, repair, and deploy patches. (Proactive)",
+            "5": "Defines org-wide standards on which bug classes/systems agents can patch fully unsupervised, what verification harness gates any agent deployment, and recalibrates those thresholds as agent capability improves."
+          }
+        },
+        {
+          "id": "security-update-libraries-apps",
+          "name": "Security update (libraries/apps)",
+          "description": "The use of AI to help engineers manage day 2 security operation activities - manage updates to vulnerable libraries (patching), creating reports that help understand risk exposire, and create plans that help safely remediate security challenges.",
+          "levels": {
+            "0": "Does not use AI to help with managing security patching or updates",
+            "1": "Ad-hoc/copy-paste — asks AI to summarize a single CVE or draft a single patch on request, manually reviewing everything it produces.",
+            "2": "Delegates common security patching and update tasks to AI, with a defined manual review step each time.",
+            "3": "Uses AI to triage and resolve CVEs unsupervised within defined guardrails; human reviews only the subset the agent itself escalates as high-stakes.",
+            "4": "Defines and deploys agentic workflows, subagents ad tools that monitor vulnerability feeds, and automate the creation of reports and plans that help prioritise and accelerate security vulnerability patching.",
+            "5": "Defines the permission/guardrail tiers that govern what all agents in the org may do autonomously."
+          }
+        }
+      ]
+    },
+    {
+      "id": "agentic-ai-practices",
+      "name": "Agentic AI practices",
+      "competencies": [
+        {
+          "id": "verification",
+          "name": "Verification",
+          "description": "How an engineer verifies the output of agentic work",
+          "levels": {
+            "0": null,
+            "1": "Checks it runs",
+            "2": "Manual review every time",
+            "3": "Scoped to risk, extra scrutiny on high-stakes output",
+            "4": "Automated verification so output needs no line-by-line check",
+            "5": "Org eval methodology, how trust is measured and revoked"
+          }
+        },
+        {
+          "id": "guardrails",
+          "name": "Guardrails",
+          "description": "The ability of an engineer to setup, configure, or use the right governance and guardrails when carrying out agentic work",
+          "levels": {
+            "0": null,
+            "1": "Human is the only control",
+            "2": "Works within existing controls",
+            "3": "Configures guardrails based on risk",
+            "4": "Builds guardrails others adopt",
+            "5": "Sets org policy on what  agents may do autonomously and what always needs a human"
+          }
+        },
+        {
+          "id": "delegation-trust",
+          "name": "Delegation & Trust",
+          "description": "Engineers effectiveness and knowing when to supervise vs when to delegate work.",
+          "levels": {
+            "0": null,
+            "1": "Asks for fragments, reviews everything, can’t judge soundness",
+            "2": "Delegates routine tasks, uses limited deterministic checks only",
+            "3": "Delegates whole units end-to-end, uses deterministic checks consistently",
+            "4": "Orchestrates agents under own guardrails, autonomy tier mirrors own",
+            "5": "Sets org trust boundary and delegation tiers"
+          }
+        },
+        {
+          "id": "critical-evaluation-of-output",
+          "name": "Critical evaluation of output",
+          "description": "How do engineers drive up consistency and quality in the output of their tools",
+          "levels": {
+            "0": null,
+            "1": "Can’t tell good from bad",
+            "2": "Catches obvious errors, misses trade-offs",
+            "3": "Judges approach against alternatives, knows AI blind spots",
+            "4": "Catches subtly wrong output in unfamiliar domains",
+            "5": "Owns methodology for judging whether agentic output is better"
+          }
+        },
+        {
+          "id": "problem-decomposition",
+          "name": "Problem Decomposition",
+          "description": "Breaking down problems and tasks when working with AI",
+          "levels": {
+            "0": null,
+            "1": "Chat-oriented, one prompt at a time",
+            "2": "Loose written brief first",
+            "3": "Spec-driven, verifiable acceptance criteria",
+            "4": "Parallelisable decomposition with defined interfaces",
+            "5": "Org decomposition standards"
+          }
+        },
+        {
+          "id": "context-engineering",
+          "name": "Context Engineering",
+          "description": "How effective are engineers at managing context within their AI coding sessions",
+          "levels": {
+            "0": null,
+            "1": "Ad hoc paste",
+            "2": "Task-level context, uses tool mechanisms",
+            "3": "Curates project-level context, diagnoses missing context",
+            "4": "Static/dynamic layering, complex systems, and prevents bloat",
+            "5": "Org context architecture standards"
+          }
+        },
+        {
+          "id": "tooling",
+          "name": "Tooling",
+          "description": "How effective are engineers in setting up the agentic engineering tooling (beyond the defaults)",
+          "levels": {
+            "0": null,
+            "1": "Separate chat, default setup",
+            "2": "In-toolchain, some tailoring",
+            "3": "Optimised local setup",
+            "4": "Fills gaps with tools",
+            "5": "Org tooling standards"
+          }
+        },
+        {
+          "id": "reusability-packaging",
+          "name": "Reusability & Packaging",
+          "description": "How engineers find (re-use) and package up (scale) agentic work they do",
+          "levels": {
+            "0": null,
+            "1": "None",
+            "2": "Personal snippets",
+            "3": "Codified for own repeat use",
+            "4": "Team adopts",
+            "5": "Org standard, coaches others"
+          }
+        },
+        {
+          "id": "measurement",
+          "name": "Measurement",
+          "description": "Discipline an engineer follows to track effectiveness when using AI",
+          "levels": {
+            "0": null,
+            "1": "None",
+            "2": "Anecdotal sense of time saved",
+            "3": "Tracks own work",
+            "4": "Tracks at the team or project level",
+            "5": "Org methodology, recalibrates thresholds"
+          }
+        },
+        {
+          "id": "token-economics",
+          "name": "Token economics",
+          "description": "The level of effectiveness an engineer has over controlling token usage",
+          "levels": {
+            "0": null,
+            "1": "No cost awareness",
+            "2": "Basic habits, watches spend",
+            "3": "Manages cost/context trade-off deliberately",
+            "4": "Cost controls others adopt",
+            "5": "Defines efficient org-wide"
+          }
+        }
+      ]
+    }
+  ]
+}
