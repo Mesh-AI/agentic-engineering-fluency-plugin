@@ -1,0 +1,19 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "agentic-engineering-fluency",
+  "description": "Claude Code plugins that assess Agentic Engineering Fluency.",
+  "owner": {
+    "name": "Rob De Feo"
+  },
+  "plugins": [
+    {
+      "name": "agentic-engineering-fluency",
+      "description": "Score your Agentic Engineering Fluency (L0–L3) from your own Claude Code session transcripts.",
+      "author": {
+        "name": "Rob De Feo"
+      },
+      "category": "productivity",
+      "source": "./plugins/agentic-engineering-fluency"
+    }
+  ]
+}
