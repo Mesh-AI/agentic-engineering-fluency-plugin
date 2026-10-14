@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright 2026 Rob De Feo and Indicium AI
+# SPDX-License-Identifier: MIT
 """Compare score records: per-competency levels, median, and agreement.
 
 Usage: python3 <skill-dir>/scripts/compare_runs.py a.yaml b.yaml [c.yaml ...]

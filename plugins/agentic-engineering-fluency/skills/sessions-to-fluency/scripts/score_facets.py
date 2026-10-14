@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright 2026 Rob De Feo and Indicium AI
+# SPDX-License-Identifier: MIT
 """Turn per-session facets + metrics into a fluency score record (L0-L3) with fixed rules.
 
 No model judgement happens here: every level comes from the counts and thresholds below.

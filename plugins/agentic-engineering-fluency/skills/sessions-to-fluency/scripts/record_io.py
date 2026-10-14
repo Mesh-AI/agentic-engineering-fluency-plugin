@@ -1,3 +1,5 @@
+# Copyright 2026 Rob De Feo and Indicium AI
+# SPDX-License-Identifier: MIT
 """Shared helpers: load the framework, and write or read score records. Stdlib only.
 
 A score record is written twice with the same content: `<name>.yaml` for people to read and

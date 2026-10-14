@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright 2026 Rob De Feo and Indicium AI
+# SPDX-License-Identifier: MIT
 """Validate a sessions-to-fluency score record against references/framework.json.
 
 Usage: python3 <skill-dir>/scripts/check_record.py <record.yaml|record.json>

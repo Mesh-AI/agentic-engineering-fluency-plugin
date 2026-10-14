@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright 2026 Rob De Feo and Indicium AI
+# SPDX-License-Identifier: MIT
 """Collect Claude Code session transcripts into digests and metrics for fluency scoring.
 
 Stdlib only. Reads <projects>/<project>/<session>.jsonl (the main sessions; subagent
