@@ -22,7 +22,8 @@ The pipeline:
    `metrics.json` (tool use, interrupts, rejections, tests run, files edited by type, tokens,
    context size and input cost per request, models, parallel sessions, setup such as hooks,
    skills and CLAUDE.md) and `index.json`.
-2. Classification (model): one facets file per session, using `references/facets.md`.
+2. Classification (model, in a Haiku subagent by default): one facets file per session, using
+   `references/facets.md`.
 3. `score_facets.py` (deterministic): facets + metrics → levels, evidence, next steps and
    consistency checks.
 
@@ -75,16 +76,21 @@ directory). Use it in every path below, so the skill runs from any working direc
    profile, pass `--projects <that CLAUDE_CONFIG_DIR>/projects`. For a fixed window, pass `--since`
    and `--until` (`YYYY-MM-DD`, both inclusive) in place of `--days`. If fewer than 8 sessions
    are found, tell the user and suggest a longer window before going on.
-3. **Classify.** Read `references/facets.md`. Write `<work>/facets/<session-id>.json` for every
-   session in `<work>/index.json`.
-   - Up to 8 sessions or about 60,000 digest characters: classify them yourself, one digest at
-     a time.
-   - More than that: split the sessions into batches of about 60,000 characters
-     (`digest_chars` in `index.json`). Give each batch to a subagent with the Agent tool, all in
-     one message so they run in parallel. Each prompt gives the absolute paths of
-     `<skill-dir>/references/facets.md`, `<skill-dir>/references/framework.json`, the digests and
-     the facets folder. It
-     also says: classify each session independently, and do not read other facets files.
+3. **Classify.** Do not classify in this conversation. Hand the digests to the plugin's
+   `agentic-engineering-fluency:session-classifier` subagent with the Agent tool. It runs on
+   Haiku by default, which keeps the cost down and leaves this conversation's prompt cache
+   intact.
+   - Split the sessions in `<work>/index.json` into batches of about 60,000 characters
+     (`digest_chars`). Fewer sessions than that make one batch.
+   - Start one subagent per batch, all in one message so they run in parallel. Pass `model`
+     only when the engineer asked for a specific classifier model (for example "classify with
+     sonnet"). Otherwise the agent's default applies.
+   - Each prompt gives the absolute paths of `<skill-dir>/references/facets.md`,
+     `<skill-dir>/references/framework.json`, the batch's digests and `<work>/facets/`.
+   - If that agent type is not available, use `general-purpose` with the same prompt, plus the
+     instructions from `<skill-dir>/../../agents/session-classifier.md`.
+   - The result is one `<work>/facets/<session-id>.json` per session. Its `classifier_model`
+     goes into the record, so records classified by different models can be told apart.
 4. **Score.**
    ```bash
    python3 <skill-dir>/scripts/score_facets.py --work <work> --out <out> --engineer "<name>"
@@ -99,7 +105,7 @@ directory). Use it in every path below, so the skill runs from any working direc
    ```
 6. **Report back.** Give a table of phase, competency, level and confidence. Add the main
    metrics (sessions, active time, share with subagents, skills, tests run) and any consistency
-   checks that fired. Say where the record and the work directory are. Remind the user that
+   checks that fired, and the classifier model. Say where the record and the work directory are. Remind the user that
    the work directory holds condensed transcript text, which can include secrets pasted into
    sessions, and that they can delete it when they are done. Before they share the record,
    they should read its `evidence` lines.
@@ -116,4 +122,4 @@ python3 <skill-dir>/scripts/compare_runs.py <record-a.yaml> <record-b.yaml> [...
 
 It prints each competency's level per record, the median, and the share of exact and
 within-one agreement. It warns when the records' `skill_version` or `framework_version` differ in a
-breaking way, because their levels may not be comparable.
+breaking way, or their `classifier_model` differs, because their levels may not be comparable.

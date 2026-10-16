@@ -24,6 +24,8 @@ def main():
     for key in ("skill_version", "framework_version"):
         if not SEMVER.match(str(method.get(key) or "")):
             errors.append(f"method.{key} must be MAJOR.MINOR.PATCH, got {method.get(key)}")
+    if not method.get("classifier_model"):
+        errors.append("method.classifier_model is missing")
 
     ids = [s.get("competency") for s in scores]
     if ids != [c["id"] for c in expected]:

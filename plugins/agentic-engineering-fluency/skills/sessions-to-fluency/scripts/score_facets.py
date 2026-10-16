@@ -356,6 +356,7 @@ def main():
             "skill": "sessions-to-fluency",
             "skill_version": skill_version(),
             "framework_version": framework["version"],
+            "classifier_model": ", ".join(sorted({f.get("classifier_model") or "unknown" for f in facets})),
             "max_level": 3,
             "note": "Levels computed by fixed rules from per-session facets and transcript metrics. L4-L5 need outside evidence and approval. L0 means not seen in Claude Code sessions.",
             "thresholds": T,

@@ -30,6 +30,7 @@ Write one JSON file per session to `facets/<session-id>.json`:
 ```json
 {
   "session": "<session id>",
+  "classifier_model": "claude-haiku-5-5",
   "summary": "One sentence: what the engineer used Claude Code for.",
   "jobs": [
     {
@@ -56,6 +57,10 @@ Write one JSON file per session to `facets/<session-id>.json`:
   }
 }
 ```
+
+`classifier_model` is the exact model ID you are running as, from your system prompt. Write
+`unknown` if you cannot tell. The score record lists it, because a different model can
+classify the same session differently.
 
 ## `jobs`: one entry per job competency the session did real work on
 

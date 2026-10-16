@@ -6,6 +6,8 @@ A Claude Code plugin marketplace with tools that assess Agentic Engineering Flue
 | --- | --- |
 | [`agentic-engineering-fluency`](plugins/agentic-engineering-fluency) | Scores your fluency (L0–L3) from your own Claude Code session transcripts. |
 
+Running an assessment uses tokens. Classification runs on Haiku by default to keep the cost low.
+
 ## Install
 
 ```text

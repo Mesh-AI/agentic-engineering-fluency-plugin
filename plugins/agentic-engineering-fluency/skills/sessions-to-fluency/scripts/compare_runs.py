@@ -20,6 +20,10 @@ def main():
         if len({compatible_series(v) for v in versions}) > 1:
             listed = ", ".join(f"r{i + 1} {v or 'none'}" for i, v in enumerate(versions))
             print(f"warning: {key} differs in a breaking way ({listed}); levels may not be comparable\n")
+    models = [(r.get("method") or {}).get("classifier_model") for r in records]
+    if len(set(models)) > 1:
+        listed = ", ".join(f"r{i + 1} {m or 'none'}" for i, m in enumerate(models))
+        print(f"warning: classifier_model differs ({listed}); levels may differ because of the model\n")
     runs = [{s["competency"]: s.get("level") for s in r["scores"]} for r in records]
     show = lambda v: "-" if v is None else str(v)
     exact = near = 0

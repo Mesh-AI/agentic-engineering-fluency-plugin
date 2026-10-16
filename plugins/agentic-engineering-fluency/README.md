@@ -17,13 +17,20 @@ Ask Claude Code to "score my sessions" or run:
 1. A Python script reads your transcripts in `~/.claude/projects` (or
    `$CLAUDE_CONFIG_DIR/projects`). It writes one condensed digest per session and a set of
    counted metrics.
-2. Claude classifies each session into fixed facets, such as scope, how you framed the task
-   and how you reviewed the output. Claude does not choose levels.
+2. A classifier subagent (Haiku by default) sorts each session into fixed facets, such as
+   scope, how you framed the task and how you reviewed the output. It does not choose levels.
 3. A second script turns the facets and metrics into levels with fixed thresholds. The
    thresholds are written into the record.
 
 The scoring is deterministic after step 2, so two runs on the same facets give the same
 levels.
+
+## Cost
+
+Running an assessment uses tokens: the classifier reads a condensed digest of every session
+in the window, about 10–15k characters per session. It runs on Haiku to keep costs low. To
+use another model, say so when you ask, for example "score my sessions, classify with
+sonnet". The record's `method.classifier_model` shows which model classified the sessions.
 
 ## Requirements
 
